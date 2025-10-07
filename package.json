@@ -1,0 +1,17 @@
+{
+  "name": "market-auth-service",
+  "version": "1.0.0",
+  "description": "Auth service for MARKET",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
