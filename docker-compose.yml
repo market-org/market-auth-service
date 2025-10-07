@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  auth:
+    build: .
+    container_name: market-auth-service
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - MONGO_URL=mongodb://mongo-auth:27017/authDB
+    depends_on:
+      - mongo-auth
+
+  mongo-auth:
+    image: mongo:6
+    container_name: mongo-auth
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_auth_data:/data/db
+
+volumes:
+  mongo_auth_data:
