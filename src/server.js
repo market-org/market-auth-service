@@ -1,6 +1,7 @@
 import express from "express";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import protectedRoutes from "./routes/protectedRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -17,3 +18,5 @@ app.get("/", (_req, res) => {
 app.listen(PORT, () => {
   console.log(`Auth-Service läuft auf http://localhost:${PORT}`);
 });
+
+app.use("/api", protectedRoutes);

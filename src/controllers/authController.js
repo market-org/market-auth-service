@@ -34,3 +34,36 @@ export const registerUser = async (req, res) => {
     res.status(500).json({ message: "Serverfehler" });
   }
 };
+
+
+// 🔹 Benutzer Login
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Benutzer suchen
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "❌ Benutzer nicht gefunden" });
+    }
+
+    // Passwort prüfen
+    const bcrypt = await import("bcryptjs");
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "❌ Falsches Passwort" });
+    }
+
+    // ✅ Erfolg – wir geben nur eine Nachricht und Name/Email zurück
+    res.status(200).json({
+      message: "✅ Login erfolgreich",
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+      hint: "Bitte sende den Benutzernamen im Header bei weiteren Anfragen",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "❌ Serverfehler", error: error.message });
+  }
+};
