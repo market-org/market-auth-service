@@ -1,14 +1,14 @@
 import express from "express";
 import { connectDB } from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Body parser (JSON)
 app.use(express.json());
-
-// Database connection
 connectDB();
+
+app.use("/api/auth", authRoutes);
 
 app.get("/", (_req, res) => {
   res.send("✅ MARKET Auth-Service läuft mit MongoDB");

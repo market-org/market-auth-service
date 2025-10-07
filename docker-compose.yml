@@ -11,6 +11,7 @@ services:
       - MONGO_URL=mongodb://mongo-auth:27017/authDB
     depends_on:
       - mongo-auth
+    command: npm start   # ← تأكد أن هذا السطر موجود
 
   mongo-auth:
     image: mongo:6
