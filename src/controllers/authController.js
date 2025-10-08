@@ -116,3 +116,47 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+// Change user password
+export const changePassword = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "❌ Zugriff verweigert. Kein Benutzer gefunden." });
+    }
+
+    const { oldPassword, newPassword } = req.body;
+
+    // Check if both passwords are provided
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ message: "Please provide both oldPassword and newPassword" });
+    }
+
+    // Fetch user with password
+    const user = await User.findById(req.user._id).select("+password");
+
+    if (!user) {
+      return res.status(404).json({ message: "❌ Benutzer nicht gefunden" });
+    }
+
+    // Compare old password
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "❌ Altes Passwort ist falsch" });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+
+    // Save new password
+    await user.save();
+
+    res.json({
+      message: "✅ Passwort erfolgreich geändert",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "❌ Fehler beim Ändern des Passworts",
+      error: error.message,
+    });
+  }
+};
