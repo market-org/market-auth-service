@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 6,
+      select: false, // لا تُرجع الباسورد تلقائيًا
     },
     city: {
       type: String,
@@ -30,13 +31,26 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
-  { versionKey: false }
+  {
+    timestamps: true, // يضيف createdAt و updatedAt تلقائيًا
+    versionKey: false,
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+        return ret;
+      },
+    },
+    toObject: {
+      transform(doc, ret) {
+        delete ret.password;
+        return ret;
+      },
+    },
+  }
 );
+
+
 
 const User = mongoose.model("User", userSchema);
 export default User;
