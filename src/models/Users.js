@@ -32,10 +32,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
     verificationCode: {
-      type: String,
-      default: "",
+      type: String 
     },
+    verificationCodeExpires: { type: Date }
+
   },
   {
     timestamps: true, // يضيف createdAt و updatedAt تلقائيًا

@@ -10,7 +10,6 @@ app.use(express.json());
 connectDB();
 
 app.use("/api/auth", authRoutes);
-app.use("/api", protectedRoutes);
 app.use("/api/protected", protectedRoutes);
 app.get("/", (_req, res) => {
   res.send("✅ MARKET Auth-Service läuft mit MongoDB");

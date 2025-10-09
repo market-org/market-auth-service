@@ -6,13 +6,14 @@ services:
     container_name: market-auth-service
     ports:
       - "5001:5001"
+    env_file:
+      - .env 
     environment:
       - PORT=5001
       - MONGO_URL=mongodb://mongo-auth:27017/authDB
     depends_on:
       - mongo-auth
-    command: npm start   # ← تأكد أن هذا السطر موجود
-
+    command: npm start  
   mongo-auth:
     image: mongo:6
     container_name: mongo-auth

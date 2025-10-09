@@ -1,13 +1,20 @@
 import User from "../models/Users.js";
 import bcrypt from "bcryptjs";
+import { sendEmail } from "../utils/sendEmail.js";
+
 
 // Register new user
+// generate verification code for email confirmation
+
+
+
 export const registerUser = async (req, res) => {
+ 
   try {
-    const { name, email, password, city, birthday} = req.body;
+    const { name, email, password, city, birthday } = req.body;
 
     if (!name || !email || !password || !city || !birthday) {
-      return res.status(400).json({ message: "Bitte alle Felder ausfüllen , sie sind name,email, password,city" });
+      return res.status(400).json({ message: "Bitte alle Felder ausfüllen: name, email, password, city, birthday" });
     }
 
     const existingUser = await User.findOne({ email });
@@ -15,6 +22,9 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "E-Mail bereits registriert" });
     }
 
+    
+    const verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
+    const verificationCodeExpires = Date.now() + 60 * 60 * 1000; // 1 Stunde gültig
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
@@ -22,8 +32,20 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       city,
-      birthday
+      birthday,
+      verificationCode,
+      verificationCodeExpires
     });
+  
+    // Send verification email
+    const html = `
+  <h2>Willkommen bei MARKET!</h2>
+  <p>Dein Verifizierungscode lautet:</p>
+  <h3>${verificationCode}</h3>
+  <p>Gib diesen Code in der App ein, um dein Konto zu bestätigen.</p>
+`;
+
+    await sendEmail(email, "MARKET – Dein Verifizierungscode", html);
 
     res.status(201).json({
       message: "✅ Benutzer erfolgreich registriert",
@@ -84,7 +106,7 @@ export const getProfile = async (req, res) => {
   }
 };
 
-// Update current user profile (only name and city)
+// Update current user profile (only name and city )
 export const updateProfile = async (req, res) => {
   try {
     if (!req.user) {
@@ -95,7 +117,7 @@ export const updateProfile = async (req, res) => {
 
     // Check if there are fields to update
     if (!name && !city && !birthday) {
-      return res.status(400).json({ message: "Please provide at least one field to update (name or city)" });
+      return res.status(400).json({ message: "Please provide at least one field to update (name or city or birthday)" });
     }
 
     // Update allowed fields only
@@ -162,3 +184,29 @@ export const changePassword = async (req, res) => {
     });
   }
 };
+
+
+export const verifyUser = async (req, res) => {
+  const { email, code } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: "Benutzer nicht gefunden" });
+
+  if (user.isVerified)
+    return res.status(400).json({ message: "Benutzer bereits bestätigt" });
+
+  if (
+    user.verificationCode !== code ||
+    user.verificationCodeExpires < Date.now()
+  ) {
+    return res.status(400).json({ message: "Ungültiger oder abgelaufener Code" });
+  }
+
+  user.isVerified = true;
+  user.verificationCode = undefined;
+  user.verificationCodeExpires = undefined;
+  await user.save();
+
+  res.json({ message: "✅ Konto erfolgreich bestätigt" });
+};
+
