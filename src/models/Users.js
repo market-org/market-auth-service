@@ -17,12 +17,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 6,
-      select: false, // لا تُرجع الباسورد تلقائيًا
+      select: false, //damit das Passwort nicht standardmäßig zurückgegeben wird
     },
     city: {
       type: String,
       required: true,
     },
+    birthday: {
+  type: Date,
+  required: true
+    },
+
     isVerified: {
       type: Boolean,
       default: false,

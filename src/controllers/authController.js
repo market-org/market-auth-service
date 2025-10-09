@@ -4,10 +4,10 @@ import bcrypt from "bcryptjs";
 // Register new user
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, city } = req.body;
+    const { name, email, password, city, birthday} = req.body;
 
-    if (!name || !email || !password || !city) {
-      return res.status(400).json({ message: "Bitte alle Felder ausfüllen" });
+    if (!name || !email || !password || !city || !birthday) {
+      return res.status(400).json({ message: "Bitte alle Felder ausfüllen , sie sind name,email, password,city" });
     }
 
     const existingUser = await User.findOne({ email });
@@ -22,6 +22,7 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       city,
+      birthday
     });
 
     res.status(201).json({
@@ -64,7 +65,7 @@ export const loginUser = async (req, res) => {
 
 // Get current user profile (without password)
 export const getProfile = async (req, res) => {
-  try {
+  try { // the req.user is set by the checkUserHeader middleware. nicht von req.body. 
     if (!req.user) {
       return res.status(401).json({ message: "❌ Zugriff verweigert. Kein Benutzer gefunden." });
     }
