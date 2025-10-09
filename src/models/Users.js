@@ -24,8 +24,8 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     birthday: {
-  type: Date,
-  required: true
+      type: Date,
+      required: true
     },
 
     isVerified: {
@@ -34,9 +34,15 @@ const userSchema = new mongoose.Schema(
     },
 
     verificationCode: {
-      type: String 
+      type: String
     },
-    verificationCodeExpires: { type: Date }
+    verificationCodeExpires: { type: Date },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user"
+    }
+
 
   },
   {
