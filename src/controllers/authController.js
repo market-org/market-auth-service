@@ -91,16 +91,17 @@ export const updateProfile = async (req, res) => {
       return res.status(401).json({ message: "❌ Zugriff verweigert. Kein Benutzer gefunden." });
     }
 
-    const { name, city } = req.body;
+    const { name, city, birthday } = req.body;
 
     // Check if there are fields to update
-    if (!name && !city) {
+    if (!name && !city && !birthday) {
       return res.status(400).json({ message: "Please provide at least one field to update (name or city)" });
     }
 
     // Update allowed fields only
     if (name) req.user.name = name;
     if (city) req.user.city = city;
+    if (birthday) req.user.birthday = birthday;
 
     // Save updated user
     await req.user.save();
