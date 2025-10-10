@@ -103,16 +103,26 @@ export const loginUser = async (req, res) => {
 
 // Get current user profile (without password)
 export const getProfile = async (req, res) => {
-  try { // the req.user is set by the checkUserHeader middleware. nicht von req.body. 
+  try {
     if (!req.user) {
       return res.status(401).json({ message: "❌ Zugriff verweigert. Kein Benutzer gefunden." });
     }
 
-    const userData = req.user.toObject();
+    //show user without password 
+    const user = await User.findById(req.user._id).select("-password");
 
     res.json({
       message: "📄 Benutzerprofil",
-      user: userData,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        city: user.city,
+        birthday: user.birthday,
+        isVerified: user.isVerified,
+        ratingAverage: user.ratingAverage,
+        ratingCount: user.ratingCount,
+      },
     });
   } catch (error) {
     res.status(500).json({

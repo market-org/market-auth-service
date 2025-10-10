@@ -19,6 +19,18 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false, //damit das Passwort nicht standardmäßig zurückgegeben wird
     },
+    ratingAverage: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    ratingCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
     city: {
       type: String,
       required: true,
