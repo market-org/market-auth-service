@@ -1,7 +1,7 @@
 import express from "express";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
-import protectedRoutes from "./routes/protectedRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
 const app = express();
@@ -12,8 +12,7 @@ connectDB();
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api", protectedRoutes);
-app.use("/api/protected", protectedRoutes);
+app.use("/api", userRoutes);
 app.get("/", (_req, res) => {
   res.send("✅ MARKET Auth-Service läuft mit MongoDB");
 });
