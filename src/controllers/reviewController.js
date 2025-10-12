@@ -19,6 +19,19 @@ export const addReview = async (req, res) => {
       return res.status(400).json({ message: "❌ Du kannst dich nicht selbst bewerten" });
     }
 
+    // Check if the reviewer has already reviewed this seller
+    const existingReview = await Review.findOne({
+      reviewer: reviewer._id,
+      seller: sellerId,
+    });
+
+    if (existingReview) {
+      return res.status(400).json({
+        message: "❌ Du hast diesen Verkäufer bereits bewertet",
+      });
+    }
+
+
     // Make sure the seller exists
     const seller = await User.findById(sellerId);
     if (!seller) {
