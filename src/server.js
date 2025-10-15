@@ -5,8 +5,19 @@ import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import userPublicRoutes from "./routes/userPublicRoutes.js";
+import cors from "cors";
+
 
 const app = express();
+// ✅ Allow requests from Next.js frontend
+app.use(
+  cors({
+    origin: "http://localhost:3000", // frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
 const PORT = process.env.PORT || 5001;
 
 app.use(express.json());
