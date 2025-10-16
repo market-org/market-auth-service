@@ -90,6 +90,7 @@ export const loginUser = async (req, res) => {
       user: {
         name: user.name,
         email: user.email,
+        id: user._id
       },
       hint: "Bitte sende den Benutzernamen im Header bei weiteren Anfragen",
     });
